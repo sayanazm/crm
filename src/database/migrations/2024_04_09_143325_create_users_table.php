@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('patronymic')->nullable();
+            $table->string('password');
             $table->string('phone');
             $table->string('email')->unique();
-            $table->smallInteger('admin')->default(0);
+            $table->string('role');
 
             $table->timestamps();
         });
