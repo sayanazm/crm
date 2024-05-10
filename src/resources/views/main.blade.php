@@ -1,6 +1,5 @@
 <nav class="menu">
     <ul>
-        <li><a class="text" href="/main">Главная</a></li>
         <li><a class="text" href="/profile">Мой аккаунт</a></li>
         <li><a class="text" href="/order">Создать запись</a></li>
         <li><a class="text" href="/schedule">Расписание</a></li>
