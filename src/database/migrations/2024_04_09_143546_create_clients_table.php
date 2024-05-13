@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('patronymic')->nullable();
             $table->string('email')->nullable();
             $table->string('phone');
-            $table->foreignId('discount_id')->constrained()->cascadeOnDelete();
             $table->string('comment')->nullable();
             $table->dateTime('birth_date')->nullable();
             $table->timestamps();

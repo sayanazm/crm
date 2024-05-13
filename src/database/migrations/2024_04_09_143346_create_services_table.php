@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->decimal('price', $precision = 10, $scale = 2);
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
