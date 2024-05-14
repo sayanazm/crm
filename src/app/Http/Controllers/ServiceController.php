@@ -61,6 +61,8 @@ class ServiceController
             if (!empty($service)) {
                 if ($service->user_id === Auth::id()) {
                     return view('services.showService', ['service' => $service]);
+                } else {
+                    return redirect('services');
                 }
             } else {
                 return redirect('services');
@@ -71,18 +73,22 @@ class ServiceController
 
     public function edit(Request $request, int $id)
     {
-        $userId = Auth::id();
+        if (Auth::check()) {
+            $userId = Auth::id();
 
-        $service = Service::find($id);
+            $service = Service::find($id);
 
-        $service->update([
-            'user_id' => $userId,
-            'name' => $request->get('name'),
-            'price' => $request->get('price'),
-            'description' => $request->get('description'),
-        ]);
+            $service->update([
+                'user_id' => $userId,
+                'name' => $request->get('name'),
+                'price' => $request->get('price'),
+                'description' => $request->get('description'),
+            ]);
 
-        return view('services.showService', ['service' => $service]);
+            return view('services.showService', ['service' => $service]);
+        }
+        return redirect("login")->withSuccess('You are not allowed to access');
+
     }
 
     public function showDelete(int $id)
@@ -102,6 +108,7 @@ class ServiceController
         }
         return redirect('login')->with('error', 'You are not allowed to access');
     }
+
     public function delete(int $id)
     {
         if (Auth::check()) {

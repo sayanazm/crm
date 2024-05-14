@@ -1,21 +1,22 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
-Route::get('dashboard', [CustomAuthController::class, 'dashboard'])->name('dashboard');
-Route::get('login', [CustomAuthController::class, 'index'])->name('login');
-Route::post('custom-login', [CustomAuthController::class, 'customLogin'])->name('login.custom');
-Route::get('register', [CustomAuthController::class, 'registration'])->name('register');
-Route::post('custom-registration', [CustomAuthController::class, 'customRegistration'])->name('register.custom');
-Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout');
+Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::post('custom-login', [AuthController::class, 'customLogin'])->name('login.custom');
+Route::get('register', [AuthController::class, 'registration'])->name('register');
+Route::post('custom-registration', [AuthController::class, 'customRegistration'])->name('register.custom');
+Route::get('signout', [AuthController::class, 'signOut'])->name('signout');
 
 
 Route::get('main', [MainController::class, 'index'])->name('main');
@@ -35,4 +36,11 @@ Route::controller(ServiceController::class)->group(function () {
 });
 
 
-Route::get('clients', [MainController::class, 'clients'])->name('clients');
+Route::controller(ClientController::class)->group(function () {
+   Route::get('clients', 'index')->name('clients');
+   Route::get('clients/{id}', 'show')->name('clients.show');
+   Route::get('clients/delete/{id}', 'showDelete')->name('showDeleteClient');
+   Route::post('clients', 'add')->name('addClient');
+   Route::post('clients/{id}', 'edit')->name('editClient');
+   Route::post('clients/delete/{id}', 'delete')->name('deleteClient');
+});

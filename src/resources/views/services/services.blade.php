@@ -25,7 +25,7 @@
 </form>
 
         <div class="card-body">
-            <h5 class="mb-0">Список моих услуг</h5>
+            <h5 class="mb-0">Список услуг</h5>
         </div>
 
     @if(empty($userServices))
