@@ -7,38 +7,49 @@ use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\Service;
 use App\Models\UserClient;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        $userClients = UserClient::where('user_id', Auth::id())->get();
+        $userClients = UserClient::query()
+            ->where('user_id', Auth::id())
+            ->get();
+
         return view('clients.clients', ['userClients' => $userClients, 'quantity' => 0]);
     }
 
-    public function add(ClientRequest $request)
+    public function add(ClientRequest $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $data = $request->all();
         $userId = Auth::id();
         $this->create($data, $userId);
 
-        $userClients = UserClient::where('user_id', $userId)->get();
+        $userClients = UserClient::query()
+            ->where('user_id', $userId)
+            ->get();
 
         return view('clients.clients', ['userClients' => $userClients, 'quantity' => 0]);
     }
 
-    public function create(mixed $data, int $userId)
+    public function create(array $data, int $userId)
     {
         $client = Client::create([
-            'name' => $data['name'],
-            'surname' => $data['surname'],
+            'name'       => $data['name'],
+            'surname'    => $data['surname'],
             'patronymic' => $data['patronymic'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'comment' => $data['comment'],
+            'email'      => $data['email'],
+            'phone'      => $data['phone'],
+            'comment'    => $data['comment'],
         ]);
 
         return UserClient::create([
@@ -47,7 +58,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function show(int $clientId)
+    public function show(
+        int $clientId
+    ): Factory|View|Application|Redirector|RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         $userClient = UserClient::where('client_id', $clientId)->where('user_id', Auth::id())->first();
         if (!empty($userClient)) {
@@ -75,34 +88,48 @@ class ClientController extends Controller
                 'birth_date' => $request->get('birth_date'),
             ]);
         }
+
         return view('clients.showClients', ['userClient' => $userClient]);
     }
 
-    public function showDelete(int $clientId)
+    public function showDelete(
+        int $clientId
+    ): Factory|View|Application|Redirector|RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
-        $userClient = UserClient::where('client_id', $clientId)->where('user_id', Auth::id())->first();
+        $userClient = UserClient::query()
+            ->where('client_id', $clientId)
+            ->where('user_id', Auth::id())
+            ->first();
+
         if (!empty($userClient)) {
             if ($userClient->user_id === Auth::id()) {
+
                 return view('clients.showDeleteClients', ['userClient' => $userClient]);
             }
         }
+
         return redirect('clients');
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function delete(int $clientId)
+    public function delete(int $clientId): Application|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
     {
-        $userClient = UserClient::where('client_id', $clientId)->where('user_id', Auth::id())->first();
+        $userClient = UserClient::query()
+            ->where('client_id', $clientId)
+            ->where('user_id', Auth::id())
+            ->first();
 
         if (!empty($userClient)) {
             if ($userClient->user_id === Auth::id()) {
                 $client = Client::find($clientId);
                 $client->delete();
+
                 return redirect('clients');
             }
         }
+
         return redirect('clients');
 
     }
